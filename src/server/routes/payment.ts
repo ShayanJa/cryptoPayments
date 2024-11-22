@@ -75,15 +75,15 @@ router.post('/check', async (req, res) => {
 
     // For pending payments, check current status
     if (currency === 'ETH') {
-      const provider = new ethers.JsonRpcProvider(process.env.ETHEREUM_RPC_URL);
+      const provider = new ethers.providers.EtherscanProvider("sepolia", process.env.ETHERSCAN_API_KEY);
       const balance = await provider.getBalance(address);
       const history = await provider.getHistory(address);
       const lastTx = history[history.length - 1];
-
+      console.log(history)
       if (lastTx) {
         const latestBlock = await provider.getBlockNumber();
         const confirmations = latestBlock - lastTx.blockNumber;
-        const receivedAmount = Number(ethers.formatEther(lastTx.value));
+        const receivedAmount = Number(ethers.utils.formatEther(lastTx.value));
 
         return res.json({
           isReceived: receivedAmount >= expectedAmount,

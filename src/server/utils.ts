@@ -3,6 +3,10 @@ import { SupportedCrypto } from '../components/CryptoPayment/types';
 
 export const generatePaymentAddress = async (currency: SupportedCrypto): Promise<string> => {
   if (currency === 'ETH') {
+    if (process.env.PRIVATE_KEY) {
+      const wallet = new ethers.Wallet(process.env.PRIVATE_KEY);
+      return wallet.getAddress();
+    }
     const wallet = ethers.Wallet.createRandom();
     return wallet.address;
   } else {

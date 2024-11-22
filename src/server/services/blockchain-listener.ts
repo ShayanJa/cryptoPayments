@@ -4,10 +4,10 @@ import axios from 'axios';
 import { PaymentModel } from '../models/payment';
 
 export class BlockchainListener {
-  private provider: ethers.JsonRpcProvider;
+  private provider: ethers.providers.EtherscanProvider;
 
   constructor() {
-    this.provider = new ethers.JsonRpcProvider(process.env.ETHEREUM_RPC_URL);
+    this.provider = new ethers.providers.EtherscanProvider("sepolia", process.env.ETHERSCAN_API_KEY);
     this.startListening();
   }
 
@@ -16,11 +16,14 @@ export class BlockchainListener {
       const balance = await this.provider.getBalance(payment.address);
       const history = await this.provider.getHistory(payment.address);
       const lastTx = history[history.length - 1];
+      console.log("history", history)
 
       if (lastTx) {
         const latestBlock = await this.provider.getBlockNumber();
         const confirmations = latestBlock - lastTx.blockNumber;
-        const receivedAmount = Number(ethers.formatEther(lastTx.value));
+        // const receivedAmount = Number(ethers.utils.formatEther(lastTx.value));
+        // console.log(Number(lastTx.value))
+        const receivedAmount = Number(lastTx.value)
 
         if (receivedAmount >= payment.expectedAmount && confirmations >= 1) {
           await this.markPaymentComplete(payment, lastTx.hash, confirmations);

@@ -8,7 +8,7 @@ import { Modal } from './Modal';
 import { PaymentStatus } from './PaymentStatus';
 import { CountdownTimer } from './CountdownTimer';
 import { usePaymentMonitor } from './hooks/usePaymentMonitor';
-import { createCheckout } from '../../lib/api';
+import { createCheckout, createPayment } from '../../lib/api';
 
 const PAYMENT_WINDOW_MINUTES = 30;
 
@@ -26,6 +26,8 @@ export const CryptoPayment: React.FC<CryptoPaymentProps> = ({
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [expiryTime, setExpiryTime] = useState<Date | null>(null);
+  const [session_id, setSessionId] = useState<number | null>(null)
+
 
   const { status, error } = usePaymentMonitor(
     paymentAddress,
@@ -51,8 +53,13 @@ export const CryptoPayment: React.FC<CryptoPaymentProps> = ({
       const setupPayment = async () => {
         setIsLoading(true);
         try {
-          const res = await createCheckout({amount, currency, supportedCurrencies })
-          setPaymentAddress(res.paymentAddress);
+          // const res = await createCheckout({amount, currency, supportedCurrencies })
+          // setPaymentAddress(res.paymentAddress);
+          // setSessionId(res.id)
+          const res = await createPayment({amount, currency:selectedCurrency})
+          setPaymentAddress(res.address)
+          // setSessionId(res.id)
+
           // Set expiry time to 30 minutes from now
           setExpiryTime(new Date(Date.now() + PAYMENT_WINDOW_MINUTES * 60 * 1000));
         } catch (error) {

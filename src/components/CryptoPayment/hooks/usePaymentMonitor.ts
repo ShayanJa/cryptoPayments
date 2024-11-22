@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SupportedCrypto } from '../types';
+import {checkPaymentStatus} from '../../../lib/api'
 
 interface PaymentStatus {
   isReceived: boolean;
@@ -16,6 +17,7 @@ export const usePaymentMonitor = (
     isReceived: false,
   });
   const [error, setError] = useState<Error | null>(null);
+  console.log(address)
 
   useEffect(() => {
     if (!address || !currency) {
@@ -23,30 +25,16 @@ export const usePaymentMonitor = (
       setError(null);
       return;
     }
+    console.log("here")
 
     const checkPayment = async () => {
       try {
-        const response = await fetch(`/api/payment/check`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+        const data = await checkPaymentStatus(
             address,
             currency,
             expectedAmount,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to check payment status');
-        }
-
-        const data = await response.json();
-        
-        if (data.error) {
-          throw new Error(data.error);
-        }
+        )
+        console.log(data)
 
         setStatus({
           isReceived: data.isReceived,
