@@ -3,8 +3,12 @@ import { SupportedCrypto } from '../components/CryptoPayment/types';
 
 export const generatePaymentAddress = async (currency: SupportedCrypto): Promise<string> => {
   if (currency === 'ETH') {
-    if (process.env.PRIVATE_KEY) {
-      const wallet = new ethers.Wallet(process.env.PRIVATE_KEY);
+    if (process.env.ETHEREUM_MNEMONIC) {
+      const wallet =  ethers.Wallet.fromMnemonic(process.env.ETHEREUM_MNEMONIC)
+      return wallet.getAddress();
+    }
+    else if (process.env.ETHEREUM_PRIVATE_KEY) {
+      const wallet = new ethers.Wallet(process.env.ETHEREUM_PRIVATE_KEY);
       return wallet.getAddress();
     }
     const wallet = ethers.Wallet.createRandom();
@@ -15,3 +19,4 @@ export const generatePaymentAddress = async (currency: SupportedCrypto): Promise
     return 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
   }
 };
+

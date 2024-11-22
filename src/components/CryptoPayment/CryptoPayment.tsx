@@ -9,6 +9,7 @@ import { PaymentStatus } from './PaymentStatus';
 import { CountdownTimer } from './CountdownTimer';
 import { usePaymentMonitor } from './hooks/usePaymentMonitor';
 import { createCheckout, createPayment } from '../../lib/api';
+import {getPriceFromCoingecko} from '../CryptoPayment/utils'
 
 const PAYMENT_WINDOW_MINUTES = 30;
 
@@ -27,13 +28,25 @@ export const CryptoPayment: React.FC<CryptoPaymentProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [expiryTime, setExpiryTime] = useState<Date | null>(null);
   const [session_id, setSessionId] = useState<number | null>(null)
-
+  const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
 
   const { status, error } = usePaymentMonitor(
     paymentAddress,
     selectedCurrency,
     amount
   );
+
+  useEffect(() => {
+    const getPrices = async () => {
+      const price = await getPriceFromCoingecko(selectedCurrency)
+      console.log(price)
+      if (price) {
+        setEstimatedCost(amount / price)
+      }
+    }
+    getPrices()
+  }, [selectedCurrency])
+
 
   useEffect(() => {
     if (status.isReceived && status.txHash) {
@@ -56,7 +69,13 @@ export const CryptoPayment: React.FC<CryptoPaymentProps> = ({
           // const res = await createCheckout({amount, currency, supportedCurrencies })
           // setPaymentAddress(res.paymentAddress);
           // setSessionId(res.id)
-          const res = await createPayment({amount, currency:selectedCurrency})
+          const price = await getPriceFromCoingecko(selectedCurrency)
+          console.log(price)
+          if (price) {
+            setEstimatedCost(amount / price)
+          }
+          
+          const res = await createPayment({amount: amount / price, currency:selectedCurrency})
           setPaymentAddress(res.address)
           // setSessionId(res.id)
 
@@ -118,7 +137,7 @@ export const CryptoPayment: React.FC<CryptoPaymentProps> = ({
         <div className="text-center mb-2">
           <span className="text-sm text-gray-600">Amount to Pay</span>
           <div className="text-2xl font-bold text-gray-900">
-            {selectedCurrency && formatCryptoAmount(amount, selectedCurrency)}
+            {selectedCurrency && estimatedCost && formatCryptoAmount(estimatedCost, selectedCurrency)}
           </div>
           <div className="text-sm text-gray-500">≈ {amount} {currency}</div>
         </div>

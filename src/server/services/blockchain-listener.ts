@@ -13,17 +13,14 @@ export class BlockchainListener {
 
   private async checkEthereumPayment(payment: any) {
     try {
-      const balance = await this.provider.getBalance(payment.address);
       const history = await this.provider.getHistory(payment.address);
       const lastTx = history[history.length - 1];
-      console.log("history", history)
 
       if (lastTx) {
         const latestBlock = await this.provider.getBlockNumber();
         const confirmations = latestBlock - lastTx.blockNumber;
-        // const receivedAmount = Number(ethers.utils.formatEther(lastTx.value));
-        // console.log(Number(lastTx.value))
-        const receivedAmount = Number(lastTx.value)
+        const receivedAmount = Number(ethers.utils.formatEther(lastTx.value));
+        console.log(Number(lastTx.value))
 
         if (receivedAmount >= payment.expectedAmount && confirmations >= 1) {
           await this.markPaymentComplete(payment, lastTx.hash, confirmations);

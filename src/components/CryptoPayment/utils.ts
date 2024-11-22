@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { SupportedCrypto } from './types';
-
+import axios from 'axios'
 export const generatePaymentAddress = async (currency: SupportedCrypto): Promise<string> => {
   if (currency === 'ETH') {
     const wallet = ethers.Wallet.createRandom();
@@ -23,3 +23,29 @@ export const getCurrencyIcon = (currency: SupportedCrypto): string => {
   };
   return icons[currency];
 };
+
+export const getPriceFromCoingecko = async (crypto: SupportedCrypto): Promise<number> => {
+  
+  if (!import.meta.env.VITE_COINGECKO_API_KEY) throw new Error('Missing COINGECKO_API_KEY environment variable');
+  const geckoCryptoName = {"ETH": "ethereum", "BTC": 'bitcoin'}  
+  console.log(geckoCryptoName[crypto])
+  const apiClient = axios.create({
+    baseURL: 'https://api.coingecko.com/api/v3',
+    headers: {
+      'x-cg-demo-api-key': import.meta.env.VITE_COINGECKO_API_KEY
+    }
+  });
+  try {
+    const response = await apiClient.get(
+      `/simple/price?ids=${geckoCryptoName[crypto]}&vs_currencies=usd`
+    );
+    return response.data[geckoCryptoName[crypto]].usd;
+  } catch (error) {
+    if (error.response?.status === 429) {
+      console.error('Rate limit exceeded. Consider upgrading your CoinGecko plan.');
+    } else {
+      console.error(`Error fetching price for ${crypto}:`, error.message);
+    }
+    return null;
+  }
+}

@@ -19,8 +19,8 @@ function App() {
           <div className="flex justify-between items-center">
             <span className="text-2xl font-bold">$99.99</span>
             <CryptoPayment
-              amount={0.001}
-              currency="ETH"
+              amount={.10}
+              currency="USD"
               onPaymentComplete={handlePaymentComplete}
               onPaymentError={handlePaymentError}
               supportedCurrencies={['ETH', 'BTC']}

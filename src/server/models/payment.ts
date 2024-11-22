@@ -15,7 +15,7 @@ export interface Payment {
 }
 
 const paymentSchema = new mongoose.Schema<Payment>({
-  address: { type: String, required: true, unique: true },
+  address: { type: String, required: true },
   currency: { type: String, enum: ['ETH', 'BTC'], required: true },
   expectedAmount: { type: Number, required: true },
   webhookUrl: String,
