@@ -76,7 +76,6 @@ router.post('/check', async (req, res) => {
     // For pending payments, check current status
     if (currency === 'ETH') {
       const provider = new ethers.providers.EtherscanProvider("sepolia", process.env.ETHERSCAN_API_KEY);
-      const balance = await provider.getBalance(address);
       const history = await provider.getHistory(address);
       const lastTx = history[history.length - 1];
       console.log(history)

@@ -10,7 +10,7 @@ router.post('/create', async (req, res) => {
     const checkoutData = CheckoutSchema.parse(req.body);
     const selectedCurrency = checkoutData.supportedCurrencies[0];
     const paymentAddress = await generatePaymentAddress(selectedCurrency);
-    
+    console.log(paymentAddress)
     const checkout = new CheckoutModel({
       ...checkoutData,
       paymentAddress,
