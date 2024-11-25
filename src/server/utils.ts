@@ -6,7 +6,6 @@ const UNIQUE_PATHS_NUMS = 10
 export const generatePaymentAddress = async (currency: SupportedCrypto): Promise<string> => {
   if (currency === 'ETH') {
     if (process.env.ETHEREUM_MNEMONIC) {
-      const wallet = generateUniqueWallet(process.env.ETHEREUM_MNEMONIC);
       // Don't save the private key only public public key is needed for payment processing
       // Generate a unique wallet for each payment to avoid conflicts
       let i = 0
