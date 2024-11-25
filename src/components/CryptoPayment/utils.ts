@@ -13,7 +13,7 @@ export const generatePaymentAddress = async (currency: SupportedCrypto): Promise
 };
 
 export const formatCryptoAmount = (amount: number, currency: SupportedCrypto): string => {
-  return `${amount.toFixed(8)} ${currency}`;
+  return `${amount.toFixed(10)} ${currency}`;
 };
 
 export const getCurrencyIcon = (currency: SupportedCrypto): string => {

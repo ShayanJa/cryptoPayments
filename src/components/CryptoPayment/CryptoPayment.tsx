@@ -18,6 +18,7 @@ export const CryptoPayment: React.FC<CryptoPaymentProps> = ({
   currency = 'USD',
   onPaymentComplete,
   onPaymentError,
+  onPaymentPending,
   supportedCurrencies = ['ETH', 'BTC'],
   description,
 }) => {
@@ -66,21 +67,17 @@ export const CryptoPayment: React.FC<CryptoPaymentProps> = ({
       const setupPayment = async () => {
         setIsLoading(true);
         try {
-          // const res = await createCheckout({amount, currency, supportedCurrencies })
-          // setPaymentAddress(res.paymentAddress);
-          // setSessionId(res.id)
           const price = await getPriceFromCoingecko(selectedCurrency)
-          console.log(price)
           if (price) {
             setEstimatedCost(amount / price)
           }
           
           const res = await createPayment({amount: amount / price, currency:selectedCurrency})
           setPaymentAddress(res.address)
-          // setSessionId(res.id)
 
           // Set expiry time to 30 minutes from now
           setExpiryTime(new Date(Date.now() + PAYMENT_WINDOW_MINUTES * 60 * 1000));
+          onPaymentPending?.(res.id)
         } catch (error) {
           onPaymentError?.(error as Error);
         } finally {
