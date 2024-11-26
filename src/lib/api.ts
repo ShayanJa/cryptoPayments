@@ -61,26 +61,3 @@ export const checkPaymentStatus = async (
 
   return response.json();
 };
-
-export const getExchangeRate = async (
-  fromCurrency: string,
-  toCurrency: 'ETH' | 'BTC'
-): Promise<number> => {
-  const response = await fetch(`${API_BASE_URL}/payment/exchange-rate`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    params: {
-      from: fromCurrency,
-      to: toCurrency,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to get exchange rate');
-  }
-
-  const data = await response.json();
-  return data.rate;
-};

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import QRCode from 'react-qr-code';
-import { Copy, Check, Wallet } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 import { CryptoPaymentProps, SupportedCrypto } from './types';
 import { generatePaymentAddress, formatCryptoAmount } from './utils';
 import { CheckoutButton } from './CheckoutButton';
@@ -119,11 +119,10 @@ export const CryptoPayment: React.FC<CryptoPaymentProps> = ({
 
   const PaymentModal = () => (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-6 animate-fadeIn">
+      <div className="mb-6 animate-fadeIn">
         <h2 className="text-2xl font-bold text-gray-800">
           {selectedCurrency} Payment
         </h2>
-        <Wallet className="w-6 h-6 text-blue-500" />
       </div>
 
       {description && (
