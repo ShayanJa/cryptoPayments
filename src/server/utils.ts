@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { SupportedCrypto } from '../components/CryptoPayment/types';
 import { PaymentModel } from './models/payment';
 
-const UNIQUE_PATHS_NUMS = 10
+const UNIQUE_PATHS_NUMS = parseFloat(process.env.UNIQUE_PATHS_NUMS || '10')
 export const generatePaymentAddress = async (currency: SupportedCrypto): Promise<string> => {
   if (currency === 'ETH') {
     if (process.env.ETHEREUM_MNEMONIC) {
