@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import QRCode from 'react-qr-code';
 import { Copy, Check } from 'lucide-react';
 import { CryptoPaymentProps, SupportedCrypto } from './types';
-import { generatePaymentAddress, formatCryptoAmount } from './utils';
+import {formatCryptoAmount } from './utils';
 import { CheckoutButton } from './CheckoutButton';
 import { Modal } from './Modal';
 import { PaymentStatus } from './PaymentStatus';
 import { CountdownTimer } from './CountdownTimer';
 import { usePaymentMonitor } from './hooks/usePaymentMonitor';
-import { createCheckout, createPayment } from '../../lib/api';
+import { createPayment } from '../../lib/api';
 import {getPriceFromCoingecko} from '../CryptoPayment/utils'
 
 const PAYMENT_WINDOW_MINUTES = 30;
@@ -19,7 +19,7 @@ export const CryptoPayment: React.FC<CryptoPaymentProps> = ({
   onPaymentComplete,
   onPaymentError,
   onPaymentPending,
-  supportedCurrencies = ['ETH', 'BTC'],
+  supportedCurrencies = ['ETH'],
   description,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

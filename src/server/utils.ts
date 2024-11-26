@@ -3,7 +3,7 @@ import { SupportedCrypto } from '../components/CryptoPayment/types';
 import { PaymentModel } from './models/payment';
 
 const UNIQUE_PATHS_NUMS = parseFloat(process.env.UNIQUE_PATHS_NUMS || '10')
-export const generatePaymentAddress = async (currency: SupportedCrypto): Promise<string> => {
+export const generatePaymentAddress = async (currency: SupportedCrypto): Promise<string[]> => {
   if (currency === 'ETH') {
     if (process.env.ETHEREUM_MNEMONIC) {
       // Don't save the private key only public public key is needed for payment processing
@@ -17,22 +17,14 @@ export const generatePaymentAddress = async (currency: SupportedCrypto): Promise
           console.log('Pending payment found, Creating new path:', publicKey, wallet.path);
         } else {      
           console.log(publicKey)
-          return publicKey
+          return [publicKey, wallet.path];
         }
       }
     
     } 
-    else if (process.env.ETHEREUM_PRIVATE_KEY) {
-      const wallet = new ethers.Wallet(process.env.ETHEREUM_PRIVATE_KEY);
-      return wallet.getAddress();
-    }
-    const wallet = ethers.Wallet.createRandom();
-    return wallet.address;
-  } else {
-    // For demo purposes, returning a static BTC address
-    // In production, you'd want to generate this properly using bitcoinjs-lib
-    return 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
-  }
+    
+  } 
+  return []
 };
 
 

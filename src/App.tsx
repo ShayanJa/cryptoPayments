@@ -23,7 +23,7 @@ function App() {
               currency="USD"
               onPaymentComplete={handlePaymentComplete}
               onPaymentError={handlePaymentError}
-              supportedCurrencies={['ETH', 'BTC']}
+              supportedCurrencies={['ETH']}
               description="Payment for Premium Plan"
             />
           </div>

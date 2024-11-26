@@ -23,12 +23,13 @@ router.post('/create', async (req, res) => {
   try {
     const { amount, currency, webhookUrl, expiresIn } = CreatePaymentSchema.parse(req.body);
     
-    const address = await generatePaymentAddress(currency);
+    const [address, derivationPath] = await generatePaymentAddress(currency);
     const expiresAt = new Date(Date.now() + expiresIn * 60 * 1000);
 
     const payment = new PaymentModel({
       address,
       currency,
+      derivationPath,
       expectedAmount: amount,
       webhookUrl,
       expiresAt,
@@ -81,7 +82,7 @@ router.post('/check', async (req, res) => {
       console.log(history)
       if (lastTx) {
         const latestBlock = await provider.getBlockNumber();
-        const confirmations = latestBlock - lastTx.blockNumber;
+        const confirmations = latestBlock - lastTx?.blockNumber;
         const receivedAmount = Number(ethers.utils.formatEther(lastTx.value));
 
         return res.json({

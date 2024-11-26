@@ -9,6 +9,7 @@ export interface Payment {
   status: 'pending' | 'completed' | 'expired';
   txHash?: string;
   confirmations?: number;
+  derivationPath: string;
   expiresAt: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -26,6 +27,7 @@ const paymentSchema = new mongoose.Schema<Payment>({
   },
   txHash: String,
   confirmations: Number,
+  derivationPath: String,
   expiresAt: { type: Date, required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
